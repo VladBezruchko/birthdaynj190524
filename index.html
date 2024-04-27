@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy BirthDay</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: background-image 1s, color 1s; /* Додано анімацію зміни фону та кольору тексту */
+        }
+        body {
+            background-color: #f0f0f0; /* колір фону */
+            background-image: url('bg1.jpg'); /* зображення для фону */
+            background-size: cover; /* розмір зображення фону */
+            background-position: center; /* позиція зображення фону */
+            background-repeat: no-repeat; /* поведінка зображення фону */
+        }
+        .content {
+            text-align: center;
+        }
+        .input-container {
+            margin-bottom: 10px; /* Додано відступ під контейнер */
+        }
+        .input-container button {
+            padding: 10px 20px; /* Внутрішній відступ тексту у кнопці */
+            font-size: 16px; /* Розмір шрифту у кнопці */
+            background-color: #007bff; /* Колір фону кнопки */
+            color: white; /* Колір тексту у кнопці */
+            border: none; /* Відсутня рамка навколо кнопки */
+            border-radius: 5px; /* Закруглені кути кнопки */
+            cursor: pointer; /* Змінює курсор при наведенні на кнопку */
+            transition: transform 0.3s, opacity 0.3s; /* Додано анімацію трансформації і прозорості */
+        }
+        .input-container button:hover {
+            transform: translateY(3px); /* Зміщує кнопку вниз при наведенні */
+        }
+        .input-container button:active {
+            transform: translateY(3px); 
+        }
+        .input-container button {
+            margin-top: 10px; /* Додано відступ між кнопкою і полем для вводу тексту */
+        }
+        .button-wraper canvas{
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            pointer-events: none;
+        }
+        .clock {
+            font-family: Luminari, sans-serif;
+            font-size: 40px;
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="content">
+        <h1 id="greeting" style="color: #0044ff; font-size: 40px; font-weight: bold; text-align: center; margin-bottom: 20px;">Привіт Настя!</h1>
+        <div class="input-container">
+            <button class="confetti-button" onclick="buttonTap(this)">Натисніть мене</button>
+        </div>
+        <p id="clock" class="clock"></p>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<script>
+    function buttonTap(button) {
+        // Зміна тексту заголовка h1 за допомогою id
+        var greeting = document.getElementById('greeting');
+        greeting.textContent = "З днем народження,прікалістка!";
+        greeting.style.color= "black";
+        greeting.style.fontSize="30px";
+        greeting.style.fontFamily="Arial, sans-serif";
+
+        // Зміна заднього фону (зображення)
+        document.body.style.backgroundImage = "url('bg2.jpg')";
+
+        // Конфетті
+        let canvas= document.createElement("canvas");
+        canvas.width=600;
+        canvas.height=600;
+        let container=document.getElementsByClassName("input-container")[0];
+        container.appendChild(canvas);
+
+        let confetti_button=confetti.create(canvas);
+        confetti_button().then(() => container.removeChild(canvas));
+
+        // Вимкнення кнопки
+        button.disabled = true;
+        button.style.display='none';
+
+        // Виведення годинника
+        setInterval(updateClock, 1000); // Оновлюємо кожну секунду
+    }
+
+    // Функція для оновлення годинника
+    function updateClock() {
+        var startDate = new Date("2009-05-19T00:00:00");
+        var currentTime = new Date();
+        var elapsedTime = currentTime - startDate;
+        var elapsedTimeFormatted = formatElapsedTime(elapsedTime);
+        var clockElement = document.getElementById("clock");
+        clockElement.textContent = elapsedTimeFormatted;
+    }
+
+    // Функція для форматування часу
+    function formatElapsedTime(elapsedTime) {
+        var seconds = Math.floor(elapsedTime / 1000) % 60;
+        var minutes = Math.floor(elapsedTime / (1000 * 60)) % 60;
+        var hours = Math.floor(elapsedTime / (1000 * 60 * 60)) % 24;
+        var days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24)) % 365;
+        var years = Math.floor(elapsedTime / (1000 * 60 * 60 * 24 * 365));
+
+        // Високосний рік має 366 днів, тому якщо кількість днів більше 365, то це високосний рік
+        if (days > 365) {
+            years += 1;
+            days -= 365;
+        }
+
+        return padWithZero(years, 4) + ":" + padWithZero(days, 3) + ":" + padWithZero(hours, 2) + ":" + padWithZero(minutes, 2) + ":" + padWithZero(seconds, 2);
+    }
+
+    // Функція для додавання нулів перед числами, якщо вони менші за задану довжину
+    function padWithZero(number, length) {
+        var str = '' + number;
+        while (str.length < length) {
+            str = '0' + str;
+        }
+        return str;
+    }
+</script>
+</body>
+</html>
+
